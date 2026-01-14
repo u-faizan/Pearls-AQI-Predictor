@@ -1,0 +1,544 @@
+# AQI Predictor - Project Documentation
+**Air Quality Index Forecasting System for Islamabad, Pakistan**
+
+---
+
+## 📋 Project Information
+
+| **Property** | **Value** |
+|--------------|-----------|
+| **Project Name** | AQI Predictor |
+| **Objective** | Predict Air Quality Index for next 3 days using Machine Learning |
+| **City** | Islamabad, Pakistan |
+| **Timeline** | December 2025 - February 2026 (60 days) |
+| **Developer** | Umar Faizan |
+| **Type** | Data Science Internship Project |
+
+---
+
+## 🎯 Project Objectives
+
+The main objectives of this project are:
+
+1. **Data Collection**: Fetch real-time and historical air quality data from APIs
+2. **Feature Engineering**: Extract meaningful features from raw pollutant data
+3. **Model Training**: Train and compare multiple ML models for AQI prediction
+4. **Automation**: Implement CI/CD pipelines for automated data collection and model retraining
+5. **Visualization**: Build an interactive Streamlit dashboard for predictions
+6. **Documentation**: Maintain comprehensive documentation for reproducibility
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────┐
+│  OpenMeteo API  │ (Free - No Key Required)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Data Collection Pipeline          │
+│   (src/data/data_collector.py)     │
+│   • Fetch air quality data          │
+│   • Fetch weather data              │
+│   • Merge datasets                  │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Raw Data Storage                  │
+│   (data/raw/*.csv)                  │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Feature Engineering               │
+│   (src/features/feature_engineering)│
+│   • Calculate EPA AQI               │
+│   • Create time features            │
+│   • Create lag features             │
+│   • Create rolling features         │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Processed Data                    │
+│   (data/processed/*.csv)            │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Model Training                    │
+│   (src/models/train.py)             │
+│   • Linear Regression               │
+│   • Ridge Regression                │
+│   • Random Forest                   │
+│   • Model evaluation                │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Trained Models                    │
+│   (models/*.pkl)                    │
+└────────┬────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────┐
+│   Streamlit Dashboard               │
+│   (app/streamlit_app.py)            │
+│   • 3-day forecasts                 │
+│   • Model comparison                │
+│   • Data visualization              │
+└─────────────────────────────────────┘
+```
+
+---
+
+## 🛠️ Technology Stack
+
+### **Programming Languages**
+- Python 3.10+
+
+### **Data Processing**
+- **pandas** - Data manipulation and analysis
+- **numpy** - Numerical computing
+- **pyarrow** - Efficient data storage (Parquet format)
+
+### **Machine Learning**
+- **scikit-learn** - ML algorithms and tools
+  - Linear Regression
+  - Ridge Regression
+  - Random Forest Regressor
+- **joblib** - Model serialization
+
+### **Web Framework**
+- **Streamlit** - Interactive dashboard
+- **plotly** - Interactive visualizations
+- **matplotlib** - Static plots
+
+### **APIs**
+- **OpenMeteo API** - Free air quality and weather data
+  - Air Quality API: `https://air-quality.open-meteo.com/v1/air-quality`
+  - Weather API: `https://api.open-meteo.com/v1/forecast`
+
+### **Automation**
+- **GitHub Actions** - CI/CD pipelines
+- **APScheduler** - Task scheduling
+
+### **Development Tools**
+- **python-dotenv** - Environment variable management
+- **requests** - HTTP requests
+- **pytest** - Testing framework
+
+---
+
+## 📊 Data Sources
+
+### **OpenMeteo Air Quality API**
+
+**Endpoint**: `https://air-quality.open-meteo.com/v1/air-quality`
+
+**Parameters**:
+- `latitude`: 33.6996 (Islamabad)
+- `longitude`: 73.0362 (Islamabad)
+- `hourly`: Pollutant measurements
+- `timezone`: Asia/Karachi
+- `past_days`: 60 (for historical data)
+
+**Pollutants Collected**:
+1. **PM2.5** - Particulate Matter 2.5 micrometers (µg/m³)
+2. **PM10** - Particulate Matter 10 micrometers (µg/m³)
+3. **O₃** - Ozone (µg/m³)
+4. **NO₂** - Nitrogen Dioxide (µg/m³)
+5. **SO₂** - Sulphur Dioxide (µg/m³)
+6. **CO** - Carbon Monoxide (mg/m³)
+
+### **OpenMeteo Weather API**
+
+**Endpoint**: `https://api.open-meteo.com/v1/forecast`
+
+**Meteorological Data**:
+1. **Temperature** - 2m above ground (°C)
+2. **Relative Humidity** - 2m above ground (%)
+3. **Surface Pressure** - Atmospheric pressure (hPa)
+4. **Wind Speed** - 10m above ground (km/h)
+5. **Wind Direction** - 10m above ground (°)
+6. **Precipitation** - Rainfall (mm)
+
+---
+
+## 📁 Project Structure
+
+```
+AQI_Predictor/
+│
+├── data/
+│   ├── raw/                    # Raw API data (CSV)
+│   └── processed/              # Processed features (CSV)
+│
+├── models/                     # Trained ML models (.pkl)
+│   ├── best_model.pkl
+│   ├── scaler.pkl
+│   └── model_metrics.json
+│
+├── src/
+│   ├── data/
+│   │   ├── data_collector.py  # OpenMeteo data fetcher
+│   │   └── aqicn_collector.py # AQICN alternate collector
+│   │
+│   ├── features/
+│   │   └── feature_engineering.py  # AQI calculation & features
+│   │
+│   ├── models/
+│   │   ├── train.py           # Model training pipeline
+│   │   └── predict.py         # Prediction functions
+│   │
+│   └── utils/
+│       └── config.py          # Configuration utilities
+│
+├── app/
+│   ├── streamlit_app.py       # Main dashboard
+│   └── components/            # Dashboard components
+│
+├── notebooks/                  # Jupyter notebooks
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   └── 03_model_training.ipynb
+│
+├── tests/                     # Unit tests
+│   ├── test_data_collector.py
+│   └── test_models.py
+│
+├── .github/
+│   └── workflows/            # GitHub Actions
+│       ├── feature_pipeline.yml
+│       └── training_pipeline.yml
+│
+├── docs/                     # Documentation
+│   └── PROJECT_DOCUMENTATION.md  # This file
+│
+├── .env                      # Environment variables (not committed)
+├── .env.example              # Environment template
+├── .gitignore               # Git ignore rules
+├── requirements.txt         # Python dependencies
+└── readme.md               # Project overview
+```
+
+---
+
+## 🔧 Installation & Setup
+
+### **Prerequisites**
+- Python 3.10 or higher
+- Git
+- Internet connection (for API access)
+
+### **Step 1: Clone Repository**
+```bash
+git clone <repository-url>
+cd AQI_Predictor
+```
+
+### **Step 2: Create Virtual Environment**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### **Step 3: Install Dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+### **Step 4: Configure Environment**
+```bash
+# Copy environment template
+copy .env.example .env   # Windows
+cp .env.example .env     # Linux/Mac
+
+# Edit .env file with your city coordinates
+# For Islamabad (default):
+CITY_NAME=Islamabad
+CITY_LATITUDE=33.6996
+CITY_LONGITUDE=73.0362
+```
+
+### **Step 5: Verify Installation**
+```bash
+python --version  # Should be 3.10+
+pip list          # Should show all dependencies
+```
+
+---
+
+## 🚀 Usage Guide
+
+### **Phase 1: Data Collection**
+
+**Fetch 60 days of historical data:**
+```bash
+python src/data/data_collector.py
+```
+
+**Expected Output:**
+- CSV file saved to `data/raw/openmeteo_combined_YYYYMMDD_HHMMSS.csv`
+- ~1440 hourly records (60 days × 24 hours)
+- 13 columns (time + 6 pollutants + 6 weather features)
+
+**Verify:**
+```bash
+# Check data folder
+ls data/raw/
+
+# View first few rows
+import pandas as pd
+df = pd.read_csv('data/raw/openmeteo_combined_*.csv')
+print(df.head())
+```
+
+---
+
+### **Phase 2: Feature Engineering**
+
+**Process raw data and calculate AQI:**
+```bash
+python src/features/feature_engineering.py
+```
+
+**What it does:**
+1. Loads raw data
+2. Calculates AQI using EPA formula
+3. Creates time-based features (hour, day, month)
+4. Creates lag features (previous values)
+5. Creates rolling averages
+6. Saves to `data/processed/processed_aqi.csv`
+
+**Features Created:**
+- **Original**: 13 features (pollutants + weather)
+- **AQI**: Calculated using EPA breakpoints
+- **Time features**: hour, day_of_week, month, is_weekend
+- **Lag features**: AQI_lag_1, AQI_lag_24, AQI_lag_168
+- **Rolling features**: rolling_mean_24, rolling_std_24, etc.
+- **Total**: ~25 features
+
+---
+
+### **Phase 3: Model Training**
+
+**Train and compare models:**
+```bash
+python src/models/train.py
+```
+
+**Models Trained:**
+1. **Linear Regression** - Baseline model
+2. **Ridge Regression** - Regularized linear model
+3. **Random Forest** - Ensemble tree-based model
+
+**Evaluation Metrics:**
+- **RMSE** - Root Mean Square Error (lower is better)
+- **MAE** - Mean Absolute Error (lower is better)
+- **R² Score** - Coefficient of determination (higher is better)
+
+**Output:**
+- Best model saved to `models/best_model.pkl`
+- Scaler saved to `models/scaler.pkl`
+- Metrics saved to `models/model_metrics.json`
+- Comparison chart saved to `models/model_comparison.png`
+
+---
+
+### **Phase 4: Dashboard**
+
+**Launch Streamlit app:**
+```bash
+streamlit run app/streamlit_app.py
+```
+
+**Dashboard Features:**
+- 🏠 **Home**: Current AQI and 3-day forecast
+- 📈 **Historical Data**: Trends and pollutant breakdown
+- 🤖 **Model Performance**: Comparison of all models
+- ℹ️ **About**: Project information
+
+**Access:**
+- Open browser to `http://localhost:8501`
+
+---
+
+## 📈 Implementation Progress
+
+### ✅ **Completed Steps**
+
+#### **Step 1: Environment Setup** (Jan 12, 2026)
+- [x] Created project structure
+- [x] Installed dependencies
+- [x] Configured environment variables
+- [x] Set up Git repository
+
+#### **Step 2: Data Collection** (Jan 12, 2026)
+- [x] Implemented OpenMeteo API integration
+- [x] Created data collector script
+- [x] Configured for Islamabad coordinates
+- [x] Testing data collection...
+
+### 🔄 **In Progress**
+
+- [ ] Fetch and verify 60 days of data
+- [ ] Create exploratory data analysis notebook
+
+### 📅 **Upcoming Steps**
+
+#### **Week 1** (Jan 12-18)
+- [ ] Feature engineering implementation
+- [ ] EPA AQI calculation
+- [ ] Create Jupyter notebooks for EDA
+
+#### **Week 2** (Jan 19-25)
+- [ ] Train multiple ML models
+- [ ] Evaluate and compare performance
+- [ ] Save best model
+
+#### **Week 3** (Jan 26 - Feb 1)
+- [ ] Build Streamlit dashboard
+- [ ] Implement visualizations
+- [ ] Set up GitHub Actions
+
+#### **Week 4** (Feb 2-10)
+- [ ] Testing and bug fixes
+- [ ] Documentation completion
+- [ ] Final submission
+
+---
+
+## 📊 Expected Results
+
+### **Model Performance Targets**
+- **RMSE**: < 25
+- **MAE**: < 20
+- **R² Score**: > 0.65
+
+### **Data Requirements**
+- **Minimum**: 30 days of hourly data (~720 samples)
+- **Target**: 60 days of hourly data (~1440 samples)
+- **Features**: 20+ engineered features
+
+---
+
+## 🔍 Technical Concepts Learned
+
+### **1. API Integration**
+- Making HTTP GET requests
+- Parsing JSON responses
+- Error handling and timeouts
+
+### **2. Data Processing**
+- Pandas DataFrame operations
+- Data cleaning and merging
+- Handling missing values
+
+### **3. Feature Engineering**
+- Time-based feature extraction
+- Lag features for time series
+- Rolling window statistics
+- Domain-specific features (AQI calculation)
+
+### **4. Machine Learning**
+- Supervised learning
+- Train/test split
+- Feature scaling
+- Model comparison
+- Cross-validation
+- Hyperparameter tuning
+
+### **5. Web Development**
+- Streamlit framework
+- Interactive visualizations
+- Dashboard design
+
+### **6. DevOps**
+- Version control with Git
+- CI/CD with GitHub Actions
+- Environment management
+- Automated scheduling
+
+---
+
+## 📚 References
+
+### **AQI Calculation**
+- [EPA AQI Basics](https://www.airnow.gov/aqi/aqi-basics/)
+- [EPA AQI Calculator](https://www.airnow.gov/aqi/aqi-calculator/)
+
+### **APIs**
+- [OpenMeteo Documentation](https://open-meteo.com/en/docs)
+- [OpenMeteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api)
+
+### **Machine Learning**
+- [Scikit-learn Documentation](https://scikit-learn.org/stable/)
+- [Random Forest Guide](https://scikit-learn.org/stable/modules/ensemble.html#forest)
+
+### **Web Framework**
+- [Streamlit Documentation](https://docs.streamlit.io/)
+
+---
+
+## 🐛 Troubleshooting
+
+### **Issue: API Request Fails**
+**Solution:**
+- Check internet connection
+- Verify coordinates are correct
+- Check API endpoint is accessible
+
+### **Issue: Missing Data**
+**Solution:**
+- Some pollutants may not be available for all locations
+- Handle missing values in feature engineering
+- Use data imputation techniques
+
+### **Issue: Model Poor Performance**
+**Solution:**
+- Collect more data (increase past_days)
+- Try different features
+- Tune hyperparameters
+- Check for data quality issues
+
+---
+
+## 📝 Future Enhancements
+
+1. **Multiple Cities**: Support prediction for multiple cities
+2. **Advanced Models**: Add XGBoost, LightGBM, Neural Networks
+3. **Real-time Alerts**: Email/SMS notifications for high AQI
+4. **Mobile App**: Flutter/React Native mobile application
+5. **Weather Integration**: Include weather forecasts for better predictions
+6. **SHAP Analysis**: Model explainability and feature importance
+
+---
+
+## 👤 Author
+
+**Umar Faizan**
+- University: NUML Islamabad
+- CGPA: 3.6
+- Domain: Data Science
+- Project Type: Internship Project
+- Duration: December 2025 - Febrauary 2026
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use this project for learning and development.
+
+---
+
+*Last Updated: January 12, 2026*
+*Status: In Development - Data Collection Phase*

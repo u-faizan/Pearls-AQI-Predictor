@@ -3,8 +3,8 @@
 ## Week 1: Foundation
 
 ### Phase 1: Project Setup ✅
-- [x] Create GitHub repository
-- [x] Write README.md
+- [✅] Create GitHub repository
+- [✅] Write README.md
 - [ ] Set up project folder structure
 - [ ] Create virtual environment
 - [ ] Install dependencies
@@ -13,7 +13,6 @@
 
 ### Phase 2: Data Collection
 - [ ] Register for AQICN API
-- [ ] Register for OpenWeather API
 - [ ] Set up Hopsworks account
 - [ ] Create API data collectors
 - [ ] Test API connections

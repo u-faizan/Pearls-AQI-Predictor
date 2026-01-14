@@ -39,6 +39,20 @@ cp .env.example .env
 streamlit run app/streamlit_app.py
 ```
 
+## 📤 Push to GitHub
+
+```bash
+# Stage all changes
+git add .
+
+# Commit with a message
+git commit -m "Update data collector and documentation"
+
+# Push to the remote repository (replace <branch> with your branch, e.g., main)
+git push origin <branch>
+```
+
+
 ## 📊 Project Status
 
 🚧 **In Development** - Internship Project (Jan 2026 - Feb 2026)
