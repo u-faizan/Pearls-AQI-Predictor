@@ -4,7 +4,7 @@ End-to-end ML pipeline for 3-day Air Quality Index (AQI) forecasting with automa
 
 ## 🎯 Overview
 
-This project predicts AQI for the next 3 days using real-time weather and pollutant data from AQICN/OpenWeather APIs.
+This project predicts AQI for the next 3 days using real-time weather and pollutant data from open meteo and Hopsworks APIs.
 
 **Key Features:**
 - ✅ Automated hourly data collection
@@ -19,7 +19,7 @@ This project predicts AQI for the next 3 days using real-time weather and pollut
 - **Feature Store**: Hopsworks
 - **Web**: Streamlit, FastAPI
 - **CI/CD**: GitHub Actions
-- **APIs**: AQICN, OpenWeather
+- **APIs**: open meteo, Hopsworks
 
 ## 🚀 Quick Start
 

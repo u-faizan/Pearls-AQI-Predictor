@@ -6,14 +6,15 @@
 **Due Date**: February 10, 2026
 
 ## Phase 1: Setup (Days 1-3)
-- [✅] Create GitHub repository
-- [ ] Set up project structure
-- [ ] Configure development environment
-- [ ] Obtain API keys (AQICN, OpenWeather, Hopsworks)
-- [ ] Initialize documentation
+- ✅ Create GitHub repository
+- ✅ Set up project structure
+- ✅ Configure development environment
+- ✅ Obtain API keys (open meto, Hopsworks)
+- ✅ Initialize documentation
 
 ## Phase 2: Data Collection (Days 4-10)
-- [ ] Implement API data collectors
+- ✅ Implement API data collectors
+- ✅ Explore data (EDA)
 - [ ] Build feature engineering pipeline
 - [ ] Integrate Hopsworks Feature Store
 - [ ] Backfill historical data (6-12 months)
