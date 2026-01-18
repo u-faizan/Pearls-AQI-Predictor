@@ -312,20 +312,36 @@ python src/features/feature_engineering.py
 ```
 
 **What it does:**
-1. Loads raw data
-2. Calculates AQI using EPA formula
-3. Creates time-based features (hour, day, month)
-4. Creates lag features (previous values)
-5. Creates rolling averages
+1. Loads raw data from `data/raw/`
+2. Calculates AQI using EPA formula (PM2.5, PM10)
+3. Creates time-based features (hour, day_of_week, month, is_weekend)
+4. Creates lag features (1h, 3h, 24h previous values)
+5. Creates rolling statistics (24h, 7-day averages)
 6. Saves to `data/processed/processed_aqi.csv`
 
 **Features Created:**
-- **Original**: 13 features (pollutants + weather)
-- **AQI**: Calculated using EPA breakpoints
-- **Time features**: hour, day_of_week, month, is_weekend
-- **Lag features**: AQI_lag_1, AQI_lag_24, AQI_lag_168
-- **Rolling features**: rolling_mean_24, rolling_std_24, etc.
-- **Total**: ~25 features
+
+| Category | Features | Purpose |
+|----------|----------|---------|
+| **AQI Calculation** | `aqi`, `aqi_pm25`, `aqi_pm10` | Target variable (0-500 scale) |
+| **Time Features** | `hour`, `day_of_week`, `month`, `day_of_month`, `is_weekend` | Capture daily/weekly patterns |
+| **Lag Features** | `aqi_lag_1`, `aqi_lag_3`, `aqi_lag_24`, `pm25_lag_1`, `pm25_lag_24`, `pm10_lag_1` | Use past pollution to predict future |
+| **Rolling Stats** | `aqi_rolling_mean_24h`, `pm25_rolling_mean_24h`, `aqi_rolling_std_24h`, `aqi_rolling_mean_7d` | Smooth noise, show trends |
+
+**Results (Islamabad Data):**
+- **Input**: 7,440 raw rows
+- **Output**: 7,416 processed rows (24 lost due to lag features)
+- **Total Features**: 34 columns
+- **Average AQI**: 102.6 (Unhealthy for Sensitive Groups)
+- **AQI Range**: 13.3 - 500
+
+**EPA AQI Scale:**
+- 0-50: Good
+- 51-100: Moderate
+- 101-150: Unhealthy for Sensitive Groups ← **Islamabad average**
+- 151-200: Unhealthy
+- 201-300: Very Unhealthy
+- 301-500: Hazardous
 
 ---
 
@@ -386,18 +402,31 @@ streamlit run app/streamlit_app.py
 - [x] Implemented OpenMeteo API integration
 - [x] Created data collector script
 - [x] Configured for Islamabad coordinates
-- [x] Testing data collection...
+- [x] Successfully collected 7,440 hourly records
+
+#### **Step 3: Exploratory Data Analysis** (Jan 14, 2026)
+- [x] Created EDA notebook (`notebooks/01_eda.ipynb`)
+- [x] Analyzed data quality (no missing values)
+- [x] Identified temporal patterns and correlations
+- [x] Documented key insights
+
+#### **Step 4: Feature Engineering** (Jan 18, 2026)
+- [x] Implemented EPA AQI calculation
+- [x] Created time-based features
+- [x] Created lag features (1h, 3h, 24h)
+- [x] Created rolling statistics (24h, 7-day)
+- [x] Generated processed dataset (7,416 rows, 34 features)
 
 ### 🔄 **In Progress**
 
-- [ ] Fetch and verify 60 days of data
-- [ ] Create exploratory data analysis notebook
+- [ ] Model training and evaluation
+- [ ] Model comparison and selection
 
 ### 📅 **Upcoming Steps**
 
 #### **Week 1** (Jan 12-18)
-- [ ] Feature engineering implementation
-- [ ] EPA AQI calculation
+- [x] Feature engineering implementation ✅
+- [x] EPA AQI calculation ✅
 - [ ] Create Jupyter notebooks for EDA
 
 #### **Week 2** (Jan 19-25)

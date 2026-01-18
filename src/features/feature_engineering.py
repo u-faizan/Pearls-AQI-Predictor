@@ -8,13 +8,13 @@ import numpy as np
 from pathlib import Path
 import glob
 
-# ==================== CONFIGURATION ====================
+# CONFIGURATION 
 BASE_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = BASE_DIR / "data" / "raw"
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-# ==================== EPA AQI BREAKPOINTS ====================
+# EPA AQI BREAKPOINTS
 # Source: https://www.airnow.gov/aqi/aqi-calculator/
 AQI_BREAKPOINTS = {
     "pm2_5": [
@@ -73,7 +73,7 @@ def load_latest_raw_data():
     
     # Get the most recently modified file
     latest_file = max(csv_files, key=lambda p: p.stat().st_mtime)
-    print(f"📂 Loading: {latest_file.name}")
+    print(f"Loading: {latest_file.name}")
     
     return pd.read_csv(latest_file)
 
@@ -95,14 +95,14 @@ def engineer_features(df):
     Returns:
         pd.DataFrame: Processed data with features
     """
-    print("\n🔧 Starting Feature Engineering...")
+    print("\nStarting Feature Engineering...")
     
     # Convert timestamp to datetime
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df = df.sort_values('timestamp').reset_index(drop=True)
     
     # ==================== 1. CALCULATE AQI ====================
-    print("   📊 Calculating EPA AQI...")
+    print("   Calculating EPA AQI...")
     df['aqi_pm25'] = df['pm2_5'].apply(lambda x: calculate_aqi_component(x, 'pm2_5'))
     df['aqi_pm10'] = df['pm10'].apply(lambda x: calculate_aqi_component(x, 'pm10'))
     
@@ -110,7 +110,7 @@ def engineer_features(df):
     df['aqi'] = df[['aqi_pm25', 'aqi_pm10']].max(axis=1)
     
     # ==================== 2. TIME FEATURES ====================
-    print("   ⏰ Extracting time features...")
+    print("   Extracting time features...")
     df['hour'] = df['timestamp'].dt.hour
     df['day_of_week'] = df['timestamp'].dt.dayofweek  # 0=Monday, 6=Sunday
     df['month'] = df['timestamp'].dt.month
@@ -118,7 +118,7 @@ def engineer_features(df):
     df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
     
     # ==================== 3. LAG FEATURES ====================
-    print("   🔙 Creating lag features...")
+    print("   Creating lag features...")
     # Previous hour's values
     df['aqi_lag_1'] = df['aqi'].shift(1)
     df['pm25_lag_1'] = df['pm2_5'].shift(1)
@@ -132,7 +132,7 @@ def engineer_features(df):
     df['pm25_lag_24'] = df['pm2_5'].shift(24)
     
     # ==================== 4. ROLLING STATISTICS ====================
-    print("   📈 Creating rolling features...")
+    print("   Creating rolling features...")
     # 24-hour rolling mean (smooths daily patterns)
     df['aqi_rolling_mean_24h'] = df['aqi'].rolling(window=24, min_periods=1).mean()
     df['pm25_rolling_mean_24h'] = df['pm2_5'].rolling(window=24, min_periods=1).mean()
@@ -144,11 +144,11 @@ def engineer_features(df):
     df['aqi_rolling_mean_7d'] = df['aqi'].rolling(window=168, min_periods=1).mean()
     
     # ==================== 5. CLEAN DATA ====================
-    print("   🧹 Cleaning data...")
+    print("   Cleaning data...")
     # Drop rows with NaN values (created by lag/rolling features)
     df_clean = df.dropna()
     
-    print(f"\n✅ Feature Engineering Complete!")
+    print(f"\nFeature Engineering Complete!")
     print(f"   Original rows: {len(df)}")
     print(f"   Processed rows: {len(df_clean)}")
     print(f"   Features created: {len(df_clean.columns)}")
@@ -161,7 +161,7 @@ def save_processed_data(df):
     output_file = PROCESSED_DIR / "processed_aqi.csv"
     df.to_csv(output_file, index=False)
     
-    print(f"\n💾 Saved to: {output_file}")
+    print(f"\nSaved to: {output_file}")
     print(f"   Columns: {list(df.columns)}")
     
     return output_file
@@ -170,7 +170,7 @@ def save_processed_data(df):
 def main():
     """Main pipeline"""
     print("=" * 70)
-    print("🚀 AQI FEATURE ENGINEERING PIPELINE")
+    print("AQI FEATURE ENGINEERING PIPELINE")
     print("=" * 70)
     
     try:
@@ -184,16 +184,16 @@ def main():
         output_file = save_processed_data(df_processed)
         
         # Show summary statistics
-        print("\n📊 AQI Summary Statistics:")
+        print("\nAQI Summary Statistics:")
         print(df_processed['aqi'].describe())
         
         print("\n" + "=" * 70)
-        print("✅ SUCCESS! Ready for model training.")
+        print("SUCCESS! Ready for model training.")
         print("   Next step: python src/models/train.py")
         print("=" * 70)
         
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\nERROR: {e}")
         raise
 
 
