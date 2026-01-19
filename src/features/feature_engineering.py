@@ -167,7 +167,62 @@ def engineer_features(df):
     # 7-day (168 hours) rolling mean (weekly trend)
     df['aqi_rolling_mean_7d'] = df['aqi'].rolling(window=168, min_periods=1).mean()
     
-    # ==================== 5. CLEAN DATA ====================
+    # ==================== 6. ADDITIONAL POLLUTANT LAGS ====================
+    print("   Creating additional pollutant lag features...")
+    # Nitrogen dioxide showed 0.42 correlation - add lags
+    df['nitrogen_dioxide_lag_1'] = df['nitrogen_dioxide'].shift(1)
+    df['nitrogen_dioxide_lag_24'] = df['nitrogen_dioxide'].shift(24)
+    
+    # Ozone (inverse correlation -0.27, still useful)
+    df['ozone_lag_1'] = df['ozone'].shift(1)
+    df['ozone_lag_24'] = df['ozone'].shift(24)
+    
+    # Carbon monoxide
+    df['carbon_monoxide_lag_1'] = df['carbon_monoxide'].shift(1)
+    
+    # ==================== 7. SHORT-TERM ROLLING WINDOWS ====================
+    print("   Creating short-term rolling windows...")
+    # 6-hour and 12-hour windows for recent trends
+    df['pm2_5_rolling_mean_6h'] = df['pm2_5'].rolling(window=6, min_periods=1).mean()
+    df['pm2_5_rolling_mean_12h'] = df['pm2_5'].rolling(window=12, min_periods=1).mean()
+    df['aqi_rolling_std_6h'] = df['aqi'].rolling(window=6, min_periods=1).std()
+    
+    # ==================== 8. POLYNOMIAL FEATURES ====================
+    print("   Creating polynomial features...")
+    # Squared terms for non-linear relationships
+    df['pm2_5_squared'] = df['pm2_5'] ** 2
+    df['pm10_squared'] = df['pm10'] ** 2
+    df['temperature_squared'] = df['temperature_2m'] ** 2
+    
+    # ==================== 9. INTERACTION TERMS ====================
+    print("   Creating interaction features...")
+    # PM2.5 interactions (highest correlated pollutant)
+    df['pm2_5_temp_interaction'] = df['pm2_5'] * df['temperature_2m']
+    df['pm2_5_humidity_interaction'] = df['pm2_5'] * df['relative_humidity_2m']
+    df['pm2_5_wind_interaction'] = df['pm2_5'] * df['wind_speed_10m']
+    df['pm2_5_pressure_interaction'] = df['pm2_5'] * df['surface_pressure']
+    
+    # Ozone-temperature (ozone forms in heat)
+    df['ozone_temp_interaction'] = df['ozone'] * df['temperature_2m']
+    
+    # ==================== 10. POLLUTANT RATIOS ====================
+    print("   Creating pollutant ratios...")
+    # Fine to coarse particle ratio
+    df['pm2_5_to_pm10_ratio'] = df['pm2_5'] / (df['pm10'] + 0.1)  # +0.1 to avoid division by zero
+    
+    # Traffic indicator
+    df['no2_to_co_ratio'] = df['nitrogen_dioxide'] / (df['carbon_monoxide'] + 0.1)
+    
+    # ==================== 11. DOMAIN-SPECIFIC FEATURES ====================
+    print("   Creating domain-specific features...")
+    # Winter months (Nov-Feb) - pollution spike in Islamabad
+    df['is_winter'] = df['month'].isin([11, 12, 1, 2]).astype(int)
+    
+    # Rush hour (7-9 AM, 5-7 PM) - traffic pollution
+    df['is_rush_hour'] = (((df['hour'] >= 7) & (df['hour'] <= 9)) | 
+                          ((df['hour'] >= 17) & (df['hour'] <= 19))).astype(int)
+    
+    # ==================== 12. CLEAN DATA ====================
     print("   Cleaning data...")
     # Drop rows with NaN values (created by lag/rolling features)
     df_clean = df.dropna()
