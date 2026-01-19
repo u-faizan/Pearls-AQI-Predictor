@@ -71,7 +71,10 @@ def prepare_features(df):
         'pm2_5', 'pm10', 'carbon_monoxide', 'nitrogen_dioxide', 'sulphur_dioxide', 'ozone',
         'dust', 'uv_index', 'ammonia', 'uv_index_clear_sky',
         # Exclude pollutant-specific lags because we can't forecast them recursively easily
-        'pm25_lag_1', 'pm10_lag_1', 'pm25_lag_24', 'pm25_rolling_mean_24h'
+        'pm25_lag_1', 'pm10_lag_1', 'pm25_lag_24', 'pm25_rolling_mean_24h',
+        # Exclude RAW features that we have engineered better versions of
+        'wind_speed_10m', 'wind_direction_10m', # Replaced by wind_x, wind_y
+        'hour', 'month', 'day_of_week', 'day_of_month' # Replaced by sin/cos cyclicals
     ]
     
     feature_cols = [col for col in df.columns if col not in exclude_cols]

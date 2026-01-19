@@ -109,15 +109,36 @@ def engineer_features(df):
     # Overall AQI is the maximum of all component AQIs
     df['aqi'] = df[['aqi_pm25', 'aqi_pm10']].max(axis=1)
     
-    # ==================== 2. TIME FEATURES ====================
-    print("   Extracting time features...")
+    # ==================== 2. TIME FEATURES (CYCLICAL) ====================
+    print("   Extracting time features (Cyclical)...")
     df['hour'] = df['timestamp'].dt.hour
-    df['day_of_week'] = df['timestamp'].dt.dayofweek  # 0=Monday, 6=Sunday
+    df['day_of_week'] = df['timestamp'].dt.dayofweek
     df['month'] = df['timestamp'].dt.month
     df['day_of_month'] = df['timestamp'].dt.day
     df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
+
+    # Cyclical Encoding (Sin/Cos)
+    df['hour_sin'] = np.sin(2 * np.pi * df['hour']/24)
+    df['hour_cos'] = np.cos(2 * np.pi * df['hour']/24)
+    df['day_sin'] = np.sin(2 * np.pi * df['day_of_week']/7)
+    df['day_cos'] = np.cos(2 * np.pi * df['day_of_week']/7)
+    df['month_sin'] = np.sin(2 * np.pi * df['month']/12)
+    df['month_cos'] = np.cos(2 * np.pi * df['month']/12)
+
+    # ==================== 3. WEATHER FEATURES (VECTORS) ====================
+    print("   Engineering weather features...")
+    # Wind Vector Decomposition
+    # Convert wind_direction (degrees) to radians
+    # wind_direction_10m is standard meteorology (0=North, 90=East)
+    wd_rad = df['wind_direction_10m'] * np.pi / 180
+    df['wind_x'] = df['wind_speed_10m'] * np.sin(wd_rad)
+    df['wind_y'] = df['wind_speed_10m'] * np.cos(wd_rad)
+
+    # Interaction Terms
+    # Humidity * Temperature (Dew Point proxy)
+    df['temp_humidity_interaction'] = df['temperature_2m'] * df['relative_humidity_2m']
     
-    # ==================== 3. LAG FEATURES ====================
+    # ==================== 4. LAG FEATURES ====================
     print("   Creating lag features...")
     # Previous hour's values
     df['aqi_lag_1'] = df['aqi'].shift(1)
@@ -131,7 +152,10 @@ def engineer_features(df):
     df['aqi_lag_24'] = df['aqi'].shift(24)
     df['pm25_lag_24'] = df['pm2_5'].shift(24)
     
-    # ==================== 4. ROLLING STATISTICS ====================
+    # Extra Lags for Forecasting Stability
+    df['aqi_lag_48'] = df['aqi'].shift(48)
+    
+    # ==================== 5. ROLLING STATISTICS ====================
     print("   Creating rolling features...")
     # 24-hour rolling mean (smooths daily patterns)
     df['aqi_rolling_mean_24h'] = df['aqi'].rolling(window=24, min_periods=1).mean()

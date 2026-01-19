@@ -345,41 +345,69 @@ python src/features/feature_engineering.py
 
 ---
 
-### **Phase 3: Model Training (Completed)**
+### **Phase 3: Model Training**
 
-**Experiment**: Trained and compared 5 Machine Learning models for Multi-Day Forecasting.
-**Constraint**: Strict feature selection (No "current pollutant" features allowed to prevent data leakage).
-
-**Command:**
+**Train and compare models:**
 ```bash
 python src/models/train.py
 ```
 
-**Models Compared:**
-1. **Linear Regression** (Baseline)
-2. **Ridge Regression**
-3. **Random Forest** (Tree Ensemble)
-4. **XGBoost** (Gradient Boosting)
-5. **LightGBM** (Gradient Boosting)
+**Models Trained:**
+1. **Linear Regression** - Baseline linear model
+2. **Ridge Regression** - Regularized linear model
+3. **Random Forest** - Ensemble tree-based model
+4. **XGBoost** - Gradient boosting model
+5. **LightGBM** - Light gradient boosting model
 
-**Results (Test Set Performance):**
+**Evaluation Metrics:**
+- **RMSE** - Root Mean Square Error (lower is better)
+- **MAE** - Mean Absolute Error (lower is better)
+- **R² Score** - Coefficient of determination (higher is better)
 
-| Rank | Model | R² Score | RMSE | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| 🏆 **1st** | **Random Forest** | **0.4842** | **33.47** | **Selected for Production** |
-| 🥈 2nd | LightGBM | 0.4675 | 34.01 | Strong Contender |
-| 🥉 3rd | XGBoost | 0.4243 | 35.36 | Good performer |
-| 4th | Linear/Ridge | 0.4153 | 35.63 | Baseline performance |
+---
 
-**Key Findings:**
-- **Random Forest** proved most robust for weather-based forecasting with limited data (~7k rows).
-- **Forecasting Difficulty**: Predicting future AQI without knowing current PM2.5 levels is significantly harder (R² drops from ~0.86 to ~0.48), but this represents a **true forecast**.
-- **Feature Importance**: Lagged AQI values and Weather conditions (Wind, Temp) are the primary drivers.
+## 🧪 Feature Engineering Experiments
 
-**Artifacts:**
-- All 5 models saved in `models/*.pkl`
-- Best model linked as `models/best_model.pkl`
-- Full metrics logged to MongoDB (Model Registry) and `models/model_metrics.json`
+### **Experiment 1: Baseline Features** (Jan 18, 2026)
+
+**Features Created** (34 total):
+- EPA AQI calculation from PM2.5 and PM10
+- Time features: hour, day_of_week, month, is_weekend
+- Lag features: 1h, 3h, 24h for AQI, PM2.5, PM10
+- Rolling statistics: 24h and 7-day mean/std
+
+**Model Performance (Test Set):**
+
+| Model | MAE | RMSE | R² | Notes |
+|-------|-----|------|----|-------|
+| Linear Regression | 18.12 | 41.57 | 0.3741 | Consistent, no overfitting |
+| Ridge Regression | 18.12 | 41.57 | 0.3741 | Same as linear |
+| Random Forest | 12.53 | 38.54 | 0.4621 | Overfitting (train R²=0.92) |
+| XGBoost | 12.70 | 38.52 | 0.4627 | Overfitting (train R²=0.96) |
+| **LightGBM** ✅ | **13.79** | **37.30** | **0.4963** | **Best generalization** |
+
+**Winner**: LightGBM
+- Explains ~50% of AQI variance
+- Lowest RMSE on test set
+- Best balance between performance and generalization
+
+**Key Findings**:
+- Tree-based models significantly outperform linear models
+- Random Forest and XGBoost show severe overfitting
+- LightGBM provides best test performance with reasonable training metrics
+- Current R²=0.50 is solid baseline, target is 0.60+ for production
+
+**Artifacts**:
+- All models saved: `models/*.pkl`
+- Metrics: `models/model_metrics.json`
+- Best model: `models/best_model.pkl` (LightGBM)
+- Feature list: `models/feature_columns.json`
+
+**Next Steps**:
+- Experiment with polynomial and interaction features
+- Add more lag features and rolling windows
+- Try domain-specific features (rush hour, season)
+- Target: R² > 0.60
 
 ---
 
@@ -423,17 +451,17 @@ streamlit run app/streamlit_app.py
 - [x] Identified temporal patterns and correlations
 - [x] Documented key insights
 
-#### **Step 4: Feature Engineering** (Jan 18, 2026)
-- [x] Implemented EPA AQI calculation
-- [x] Created time-based features
-- [x] Created lag features (1h, 3h, 24h)
-- [x] Created rolling statistics (24h, 7-day)
-- [x] Generated processed dataset (7,416 rows, 34 features)
+#### **Step 5: Model Training** (Jan 19, 2026)
+- [x] Trained 5 models (Linear, Ridge, Random Forest, XGBoost, LightGBM)
+- [x] Evaluated on train/validation/test splits
+- [x] Compared performance metrics
+- [x] Selected LightGBM as best model (R²=0.4963)
+- [x] Saved all models and metrics to `models/` directory
 
 ### 🔄 **In Progress**
 
-- [ ] Model training and evaluation
-- [ ] Model comparison and selection
+- [ ] Feature engineering experiments (targeting R² > 0.60)
+- [ ] Hyperparameter tuning for LightGBM
 
 ### 📅 **Upcoming Steps**
 
