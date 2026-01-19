@@ -1,10 +1,4 @@
 [
-  "pm10",
-  "pm2_5",
-  "carbon_monoxide",
-  "nitrogen_dioxide",
-  "sulphur_dioxide",
-  "ozone",
   "temperature_2m",
   "relative_humidity_2m",
   "surface_pressure",
@@ -17,13 +11,9 @@
   "day_of_month",
   "is_weekend",
   "aqi_lag_1",
-  "pm25_lag_1",
-  "pm10_lag_1",
   "aqi_lag_3",
   "aqi_lag_24",
-  "pm25_lag_24",
   "aqi_rolling_mean_24h",
-  "pm25_rolling_mean_24h",
   "aqi_rolling_std_24h",
   "aqi_rolling_mean_7d"
 ]

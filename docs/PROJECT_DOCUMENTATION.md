@@ -345,28 +345,41 @@ python src/features/feature_engineering.py
 
 ---
 
-### **Phase 3: Model Training**
+### **Phase 3: Model Training (Completed)**
 
-**Train and compare models:**
+**Experiment**: Trained and compared 5 Machine Learning models for Multi-Day Forecasting.
+**Constraint**: Strict feature selection (No "current pollutant" features allowed to prevent data leakage).
+
+**Command:**
 ```bash
 python src/models/train.py
 ```
 
-**Models Trained:**
-1. **Linear Regression** - Baseline model
-2. **Ridge Regression** - Regularized linear model
-3. **Random Forest** - Ensemble tree-based model
+**Models Compared:**
+1. **Linear Regression** (Baseline)
+2. **Ridge Regression**
+3. **Random Forest** (Tree Ensemble)
+4. **XGBoost** (Gradient Boosting)
+5. **LightGBM** (Gradient Boosting)
 
-**Evaluation Metrics:**
-- **RMSE** - Root Mean Square Error (lower is better)
-- **MAE** - Mean Absolute Error (lower is better)
-- **R² Score** - Coefficient of determination (higher is better)
+**Results (Test Set Performance):**
 
-**Output:**
-- Best model saved to `models/best_model.pkl`
-- Scaler saved to `models/scaler.pkl`
-- Metrics saved to `models/model_metrics.json`
-- Comparison chart saved to `models/model_comparison.png`
+| Rank | Model | R² Score | RMSE | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| 🏆 **1st** | **Random Forest** | **0.4842** | **33.47** | **Selected for Production** |
+| 🥈 2nd | LightGBM | 0.4675 | 34.01 | Strong Contender |
+| 🥉 3rd | XGBoost | 0.4243 | 35.36 | Good performer |
+| 4th | Linear/Ridge | 0.4153 | 35.63 | Baseline performance |
+
+**Key Findings:**
+- **Random Forest** proved most robust for weather-based forecasting with limited data (~7k rows).
+- **Forecasting Difficulty**: Predicting future AQI without knowing current PM2.5 levels is significantly harder (R² drops from ~0.86 to ~0.48), but this represents a **true forecast**.
+- **Feature Importance**: Lagged AQI values and Weather conditions (Wind, Temp) are the primary drivers.
+
+**Artifacts:**
+- All 5 models saved in `models/*.pkl`
+- Best model linked as `models/best_model.pkl`
+- Full metrics logged to MongoDB (Model Registry) and `models/model_metrics.json`
 
 ---
 
@@ -569,5 +582,5 @@ MIT License - Feel free to use this project for learning and development.
 
 ---
 
-*Last Updated: January 12, 2026*
-*Status: In Development - Data Collection Phase*
+*Last Updated: January 19, 2026*
+*Status: Model Training & Experimentation Complete ✅*

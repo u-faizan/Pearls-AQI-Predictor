@@ -1,62 +1,87 @@
 {
   "Linear Regression": {
     "train": {
-      "dataset": "train",
-      "mae": 11.71,
-      "rmse": 39.39,
-      "r2": 0.493
+      "mae": 20.24,
+      "rmse": 44.88,
+      "r2": 0.342
     },
     "validation": {
-      "dataset": "validation",
-      "mae": 12.63,
-      "rmse": 42.1,
-      "r2": 0.4521
+      "mae": 21.29,
+      "rmse": 47.23,
+      "r2": 0.3104
     },
     "test": {
-      "dataset": "test",
-      "mae": 10.11,
-      "rmse": 29.7,
-      "r2": 0.5939
+      "mae": 18.66,
+      "rmse": 35.63,
+      "r2": 0.4153
     }
   },
   "Ridge Regression": {
     "train": {
-      "dataset": "train",
-      "mae": 11.71,
-      "rmse": 39.39,
-      "r2": 0.493
+      "mae": 20.25,
+      "rmse": 44.88,
+      "r2": 0.342
     },
     "validation": {
-      "dataset": "validation",
-      "mae": 12.63,
-      "rmse": 42.1,
-      "r2": 0.4521
+      "mae": 21.29,
+      "rmse": 47.23,
+      "r2": 0.3105
     },
     "test": {
-      "dataset": "test",
-      "mae": 10.1,
-      "rmse": 29.7,
-      "r2": 0.594
+      "mae": 18.66,
+      "rmse": 35.63,
+      "r2": 0.4153
     }
   },
   "Random Forest": {
     "train": {
-      "dataset": "train",
-      "mae": 1.32,
-      "rmse": 9.1,
-      "r2": 0.9729
+      "mae": 4.79,
+      "rmse": 15.23,
+      "r2": 0.9242
     },
     "validation": {
-      "dataset": "validation",
-      "mae": 4.43,
-      "rmse": 31.66,
-      "r2": 0.6903
+      "mae": 13.32,
+      "rmse": 44.14,
+      "r2": 0.3978
     },
     "test": {
-      "dataset": "test",
-      "mae": 2.8,
-      "rmse": 16.91,
-      "r2": 0.8683
+      "mae": 11.41,
+      "rmse": 33.47,
+      "r2": 0.4842
+    }
+  },
+  "XGBoost": {
+    "train": {
+      "mae": 5.53,
+      "rmse": 11.11,
+      "r2": 0.9597
+    },
+    "validation": {
+      "mae": 14.01,
+      "rmse": 45.65,
+      "r2": 0.356
+    },
+    "test": {
+      "mae": 12.38,
+      "rmse": 35.36,
+      "r2": 0.4243
+    }
+  },
+  "LightGBM": {
+    "train": {
+      "mae": 8.15,
+      "rmse": 18.22,
+      "r2": 0.8916
+    },
+    "validation": {
+      "mae": 14.34,
+      "rmse": 43.7,
+      "r2": 0.4098
+    },
+    "test": {
+      "mae": 12.84,
+      "rmse": 34.01,
+      "r2": 0.4675
     }
   }
 }
