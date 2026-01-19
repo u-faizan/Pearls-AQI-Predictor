@@ -33,8 +33,8 @@ wheels/
 *~
 
 # Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
+# .ipynb_checkpoints
+# *.ipynb
 
 # Data
 data/raw/*
@@ -59,3 +59,7 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# API Keys
+*_api_key.txt
+*.key

@@ -1,0 +1,62 @@
+{
+  "Linear Regression": {
+    "train": {
+      "dataset": "train",
+      "mae": 11.71,
+      "rmse": 39.39,
+      "r2": 0.493
+    },
+    "validation": {
+      "dataset": "validation",
+      "mae": 12.63,
+      "rmse": 42.1,
+      "r2": 0.4521
+    },
+    "test": {
+      "dataset": "test",
+      "mae": 10.11,
+      "rmse": 29.7,
+      "r2": 0.5939
+    }
+  },
+  "Ridge Regression": {
+    "train": {
+      "dataset": "train",
+      "mae": 11.71,
+      "rmse": 39.39,
+      "r2": 0.493
+    },
+    "validation": {
+      "dataset": "validation",
+      "mae": 12.63,
+      "rmse": 42.1,
+      "r2": 0.4521
+    },
+    "test": {
+      "dataset": "test",
+      "mae": 10.1,
+      "rmse": 29.7,
+      "r2": 0.594
+    }
+  },
+  "Random Forest": {
+    "train": {
+      "dataset": "train",
+      "mae": 1.32,
+      "rmse": 9.1,
+      "r2": 0.9729
+    },
+    "validation": {
+      "dataset": "validation",
+      "mae": 4.43,
+      "rmse": 31.66,
+      "r2": 0.6903
+    },
+    "test": {
+      "dataset": "test",
+      "mae": 2.8,
+      "rmse": 16.91,
+      "r2": 0.8683
+    }
+  }
+}
