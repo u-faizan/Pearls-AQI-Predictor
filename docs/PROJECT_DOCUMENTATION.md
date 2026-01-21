@@ -421,52 +421,17 @@ python src/models/train.py
 - Pollutant ratios: PM2.5/PM10, NO2/CO
 - Domain features: is_winter, is_rush_hour
 
-**Complete Model Performance:**
+**Model Performance (Test Set)**:
 
-#### Linear Regression
-| Split | MAE | RMSE | R² |
-|-------|-----|------|----|
-| Train | 11.45 | 34.21 | 0.6161 |
-| Validation | 10.90 | 31.78 | 0.6120 |
-| **Test** | **12.03** | **34.36** | **0.5725** |
+| Model | MAE | RMSE | R² | Train-Test Gap |
+|-------|-----|------|----|----------------|
+| Linear Regression | 12.03 | 34.36 | 0.5725 | 4.4% ✅ |
+| Ridge Regression | 12.00 | 34.36 | 0.5725 | 4.4% ✅ |
+| Random Forest | 3.24 | 20.68 | 0.8452 | 12.6% ⚠️ |
+| XGBoost | 0.99 | 11.68 | 0.9506 | 4.9% ✅ |
+| **LightGBM** ✅ | **2.09** | **9.42** | **0.9679** | **2.1%** ✅ |
 
-**Analysis**: Train-test gap = 0.044 (4.4%) - Excellent generalization, no overfitting
-
-#### Ridge Regression
-| Split | MAE | RMSE | R² |
-|-------|-----|------|----|
-| Train | 11.43 | 34.21 | 0.6161 |
-| Validation | 10.88 | 31.77 | 0.6122 |
-| **Test** | **12.00** | **34.36** | **0.5725** |
-
-**Analysis**: Train-test gap = 0.044 (4.4%) - Excellent generalization, no overfitting
-
-#### Random Forest
-| Split | MAE | RMSE | R² |
-|-------|-----|------|----|
-| Train | 1.28 | 9.35 | 0.9713 |
-| Validation | 2.71 | 19.56 | 0.8530 |
-| **Test** | **3.24** | **20.68** | **0.8452** |
-
-**Analysis**: Train-test gap = 0.126 (12.6%) - Moderate overfitting, but still excellent test performance
-
-#### XGBoost
-| Split | MAE | RMSE | R² |
-|-------|-----|------|----|
-| Train | 0.16 | 0.26 | 1.0000 |
-| Validation | 0.92 | 10.32 | 0.9591 |
-| **Test** | **0.99** | **11.68** | **0.9506** |
-
-**Analysis**: Train-test gap = 0.049 (4.9%) - Excellent generalization despite perfect train score
-
-#### LightGBM ✅ **WINNER**
-| Split | MAE | RMSE | R² |
-|-------|-----|------|----|
-| Train | 1.26 | 5.74 | 0.9892 |
-| Validation | 2.35 | 14.03 | 0.9244 |
-| **Test** | **2.09** | **9.42** | **0.9679** |
-
-**Analysis**: Train-test gap = 0.021 (2.1%) - **Genuine high performance, NOT overfitting!**
+**Winner**: LightGBM - Best test performance with minimal overfitting
 
 ---
 

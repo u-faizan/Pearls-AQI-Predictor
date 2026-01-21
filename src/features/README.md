@@ -42,25 +42,15 @@ Baseline feature set provides ~50% variance explanation. Tree-based models (Rand
 **Total Features**: 64 (up from 44)
 **Data Points**: 7,392
 
-**Model Performance**:
+**Model Performance (Test Set)**:
 
-| Model | Split | MAE | RMSE | R² |
-|-------|-------|-----|------|----|
-| **Linear Regression** | Train | 11.45 | 34.21 | 0.6161 |
-| | Validation | 10.90 | 31.78 | 0.6120 |
-| | Test | 12.03 | 34.36 | 0.5725 |
-| **Ridge Regression** | Train | 11.43 | 34.21 | 0.6161 |
-| | Validation | 10.88 | 31.77 | 0.6122 |
-| | Test | 12.00 | 34.36 | 0.5725 |
-| **Random Forest** | Train | 1.28 | 9.35 | 0.9713 |
-| | Validation | 2.71 | 19.56 | 0.8530 |
-| | Test | 3.24 | 20.68 | 0.8452 |
-| **XGBoost** | Train | 0.16 | 0.26 | 1.0000 |
-| | Validation | 0.92 | 10.32 | 0.9591 |
-| | Test | 0.99 | 11.68 | 0.9506 |
-| **LightGBM** | Train | 1.26 | 5.74 | 0.9892 |
-| | Validation | 2.35 | 14.03 | 0.9244 |
-| | Test | 2.09 | 9.42 | 0.9679 |
+| Model | MAE | RMSE | R² |
+|-------|-----|------|----|
+| Linear Regression | 12.03 | 34.36 | 0.5725 |
+| Ridge Regression | 12.00 | 34.36 | 0.5725 |
+| Random Forest | 3.24 | 20.68 | 0.8452 |
+| XGBoost | 0.99 | 11.68 | 0.9506 |
+| **LightGBM** ✅ | **2.09** | **9.42** | **0.9679** |
 
 **Comparison with Baseline**:
 
