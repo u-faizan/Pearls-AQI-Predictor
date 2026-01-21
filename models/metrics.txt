@@ -1,23 +1,19 @@
 AQI Predictor - Model Performance Metrics
-==========================================
+==================================================
 
-Experiment 2: Advanced Features (64 features)
-Date: January 2026
+Features: 21
+Date: 2026-01-21
 
-BEST MODEL: LightGBM
---------------------
-Test MAE:  2.09
-Test RMSE: 9.42
-Test RÂ²:   0.9679
-
-Train-Test Gap: 2.1% (minimal overfitting)
+BEST MODEL: XGBoost
+--------------------------------------------------
+Test MAE:  1.82
+Test RMSE: 14.76
+Test R²:   0.9226
 
 ALL MODELS (Test Set):
-----------------------
-Linear Regression:  MAE=12.03  RMSE=34.36  RÂ²=0.5725
-Ridge Regression:   MAE=12.00  RMSE=34.36  RÂ²=0.5725
-Random Forest:      MAE=3.24   RMSE=20.68  RÂ²=0.8452
-XGBoost:            MAE=0.99   RMSE=11.68  RÂ²=0.9506
-LightGBM:           MAE=2.09   RMSE=9.42   RÂ²=0.9679
-
-PRODUCTION STATUS: Ready for deployment
+--------------------------------------------------
+Linear Regression    MAE=10.93  RMSE= 38.31  R²=0.4788
+Ridge Regression     MAE=10.93  RMSE= 38.31  R²=0.4788
+Random Forest        MAE= 3.38  RMSE= 21.93  R²=0.8292
+XGBoost              MAE= 1.82  RMSE= 14.76  R²=0.9226
+LightGBM             MAE= 3.67  RMSE= 19.55  R²=0.8643

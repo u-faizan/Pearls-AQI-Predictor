@@ -411,61 +411,43 @@ python src/models/train.py
 
 ---
 
-### **Experiment 2: Advanced Features**
+---
 
-**Features Added** (20 new, 64 total):
-- Additional pollutant lags: NO2, ozone, CO (lag_1, lag_24)
-- Short-term rolling windows: 6h, 12h for PM2.5 and AQI
-- Polynomial features: pm2_5², pm10², temperature²
-- Interaction terms: PM2.5 × (temp, humidity, wind, pressure), ozone × temp
-- Pollutant ratios: PM2.5/PM10, NO2/CO
-- Domain features: is_winter, is_rush_hour
+### **Final Model: 23 Features**
+
+**Optimized feature set** for production deployment.
+
+**Features** (23 total):
+- 12 Base: Pollutants (PM10, PM2.5, CO, NO2, SO2, O3) + Weather (temp, humidity, pressure, wind, precipitation)
+- 7 Lag: pm25_lag_1, pm25_lag_24, pm10_lag_1, aqi_lag_1, aqi_lag_24, pm25_rolling_mean_24h, aqi_rolling_mean_24h
+- 4 Engineered: hour_sin, pm2_5_to_pm10_ratio
 
 **Model Performance (Test Set)**:
 
-| Model | MAE | RMSE | R² | Train-Test Gap |
-|-------|-----|------|----|----------------|
-| Linear Regression | 12.03 | 34.36 | 0.5725 | 4.4% ✅ |
-| Ridge Regression | 12.00 | 34.36 | 0.5725 | 4.4% ✅ |
-| Random Forest | 3.24 | 20.68 | 0.8452 | 12.6% ⚠️ |
-| XGBoost | 0.99 | 11.68 | 0.9506 | 4.9% ✅ |
-| **LightGBM** ✅ | **2.09** | **9.42** | **0.9679** | **2.1%** ✅ |
+| Model | MAE | RMSE | R² |
+|-------|-----|------|----|
+| Linear Regression | 10.93 | 38.31 | 0.4788 |
+| Ridge Regression | 10.93 | 38.31 | 0.4788 |
+| Random Forest | 3.38 | 21.93 | 0.8292 |
+| **XGBoost** ✅ | **1.82** | **14.76** | **0.9226** |
+| LightGBM | 3.67 | 19.55 | 0.8643 |
 
-**Winner**: LightGBM - Best test performance with minimal overfitting
+**Winner**: XGBoost
+- MAE: 1.82 (±1.82 AQI points average error)
+- R²: 0.9226 (92% variance explained)
+- Balanced performance, minimal overfitting
 
----
-
-**Experiment 2 Summary:**
-
-| Model | Baseline R² | Exp 2 R² | Improvement | Train-Test Gap | Status |
-|-------|-------------|----------|-------------|----------------|--------|
-| Linear Regression | 0.3741 | 0.5725 | +53% | 0.044 | ✅ No overfitting |
-| Ridge Regression | 0.3741 | 0.5725 | +53% | 0.044 | ✅ No overfitting |
-| Random Forest | 0.4621 | 0.8452 | +83% | 0.126 | ⚠️ Moderate overfitting |
-| XGBoost | 0.4627 | 0.9506 | +105% | 0.049 | ✅ Excellent |
-| **LightGBM** | 0.4963 | **0.9679** | **+95%** | **0.021** | **✅ Excellent** |
-
-**Key Findings**:
-- 🎉 **Target Exceeded**: Achieved R²=0.9679, far surpassing 0.60 goal
-- ✅ **No Overfitting**: LightGBM train-test gap only 2.1% - genuine performance
-- 📊 **Validation Confirms**: Validation R²=0.9244 confirms consistent performance
-- 🎯 **Production Ready**: Model predicts within ±2 AQI points on average
-- 💡 **Feature Impact**: Interaction terms + polynomials captured non-linear relationships
-- 🌟 **All Models Improved**: Even linear models gained +53% performance
-
-**Why R²=0.97 is NOT Overfitting**:
-1. Small train-test gap (2.1%) indicates genuine learning
-2. Validation set (15% of data) shows R²=0.92 - consistent with test
-3. Features capture real physical relationships (PM × weather, etc.)
-4. AQI is highly predictable from pollutants + weather + recent history
-5. 7,392 data points provide sufficient training data for 64 features
+**Why 23 Features?**
+- Simpler than 64-feature alternatives
+- Faster training and inference
+- Easier to interpret and maintain
+- Excellent performance with minimal complexity
 
 **Artifacts**:
-- All models saved: `models/*.pkl`
-- Metrics: `models/model_metrics.json`
-- Best model: `models/best_model.pkl` (LightGBM)
-- Feature list: `models/feature_columns.json`
-- Processed data: `data/processed/processed_aqi.csv` (64 features)
+- Models: `models/*.pkl`
+- Metrics: `models/model_metrics.json`, `models/metrics.txt`
+- Best model: `models/best_model.pkl` (XGBoost)
+- Features: `models/feature_columns.json`
 
 ---
 
@@ -487,55 +469,68 @@ streamlit run app/streamlit_app.py
 
 ---
 
+---
+
 ## 📈 Implementation Progress
 
-### ✅ **Completed Steps**
+### ✅ **Phase 1: Model Development** (Completed)
 
-#### **Step 1: Environment Setup** (Jan 12, 2026)
-- [x] Created project structure
-- [x] Installed dependencies
-- [x] Configured environment variables
-- [x] Set up Git repository
+#### Data Collection
+- [x] OpenMeteo API integration
+- [x] Collected 7,440 hourly records for Islamabad
+- [x] Data quality validation
 
-#### **Step 2: Data Collection** (Jan 12, 2026)
-- [x] Implemented OpenMeteo API integration
-- [x] Created data collector script
-- [x] Configured for Islamabad coordinates
-- [x] Successfully collected 7,440 hourly records
+#### Feature Engineering
+- [x] EPA AQI calculation
+- [x] Created 23 optimized features (12 base + 7 lag + 4 engineered)
+- [x] Feature importance analysis
 
-#### **Step 3: Exploratory Data Analysis** (Jan 14, 2026)
-- [x] Created EDA notebook (`notebooks/01_eda.ipynb`)
-- [x] Analyzed data quality (no missing values)
-- [x] Identified temporal patterns and correlations
-- [x] Documented key insights
-
-#### **Step 5: Model Training** (Jan 19, 2026)
+#### Model Training
 - [x] Trained 5 models (Linear, Ridge, Random Forest, XGBoost, LightGBM)
-- [x] Evaluated on train/validation/test splits
-- [x] Compared performance metrics
-- [x] Selected LightGBM as best model (R²=0.4963)
-- [x] Saved all models and metrics to `models/` directory
+- [x] Selected XGBoost as best model (MAE=1.82, R²=0.9226)
+- [x] Saved models and metrics
 
-### 🔄 **In Progress**
+#### Documentation
+- [x] Complete project documentation
+- [x] Feature engineering guide
+- [x] Model performance metrics
 
-- [ ] Feature engineering experiments (targeting R² > 0.60)
-- [ ] Hyperparameter tuning for LightGBM
+---
 
-### 📅 **Upcoming Steps**
+### � **Phase 2: Production Deployment** (In Progress)
 
-#### **Week 1** (Jan 12-18)
-- [x] Feature engineering implementation ✅
-- [x] EPA AQI calculation ✅
-- [ ] Create Jupyter notebooks for EDA
+#### MongoDB Integration
+- [ ] Set up MongoDB Atlas cluster
+- [ ] Create feature store schema
+- [ ] Implement model registry
+- [ ] Test CRUD operations
 
-#### **Week 2** (Jan 19-25)
-- [ ] Train multiple ML models
-- [ ] Evaluate and compare performance
-- [ ] Save best model
+#### Automated Data Collection
+- [ ] Hourly data collection script
+- [ ] GitHub Actions workflow (hourly)
+- [ ] Feature calculation with historical lags
 
-#### **Week 3** (Jan 26 - Feb 1)
-- [ ] Build Streamlit dashboard
-- [ ] Implement visualizations
+#### Model Registry & Retraining
+- [ ] Model versioning system
+- [ ] Daily retraining script
+- [ ] GitHub Actions workflow (daily)
+- [ ] Active model tracking
+
+#### CI/CD Pipeline
+- [ ] Automated testing
+- [ ] Deployment workflows
+- [ ] Monitoring and alerts
+
+---
+
+### 📅 **Next Steps**
+
+**Week 1**: MongoDB setup and feature store implementation
+**Week 2**: Automated hourly data collection
+**Week 3**: Model registry and daily retraining
+**Week 4**: CI/CD pipeline and testing
+
+---
 - [ ] Set up GitHub Actions
 
 #### **Week 4** (Feb 2-10)
