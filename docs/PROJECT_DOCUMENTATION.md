@@ -47,49 +47,44 @@ The main objectives of this project are:
          │
          ▼
 ┌─────────────────────────────────────┐
-│   Raw Data Storage                  │
-│   (data/raw/*.csv)                  │
-└────────┬────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
 │   Feature Engineering               │
 │   (src/features/feature_engineering)│
 │   • Calculate EPA AQI               │
-│   • Create time features            │
-│   • Create lag features             │
-│   • Create rolling features         │
+│   • Create 23 optimized features    │
+│   • Time + Lag + Engineered         │
 └────────┬────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────┐
-│   Processed Data                    │
-│   (data/processed/*.csv)            │
+│   MongoDB Atlas                     │
+│   (Feature Store & Model Registry)  │
+│   • Collection: aqi_features        │
+│   • Collection: model_registry      │
 └────────┬────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────┐
 │   Model Training                    │
 │   (src/models/train.py)             │
-│   • Linear Regression               │
-│   • Ridge Regression                │
-│   • Random Forest                   │
-│   • Model evaluation                │
+│   • XGBoost (Best: MAE=1.82)        │
+│   • LightGBM, Random Forest         │
+│   • Linear, Ridge Regression        │
 └────────┬────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────┐
-│   Trained Models                    │
-│   (models/*.pkl)                    │
+│   Model Registry (MongoDB)          │
+│   • Versioning                      │
+│   • Active model tracking           │
+│   • Performance metrics             │
 └────────┬────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────┐
-│   Streamlit Dashboard               │
-│   (app/streamlit_app.py)            │
-│   • 3-day forecasts                 │
-│   • Model comparison                │
-│   • Data visualization              │
+│   Prediction API (Planned)          │
+│   • Load model from MongoDB         │
+│   • Real-time predictions           │
+│   • Streamlit Dashboard             │
 └─────────────────────────────────────┘
 ```
 
@@ -98,6 +93,7 @@ The main objectives of this project are:
 ## 🛠️ Technology Stack
 
 ### **Programming Languages**
+
 - Python 3.10+
 
 ### **Data Processing**
@@ -110,7 +106,15 @@ The main objectives of this project are:
   - Linear Regression
   - Ridge Regression
   - Random Forest Regressor
+- **XGBoost** - Gradient boosting (Best model: MAE=1.82)
+- **LightGBM** - Fast gradient boosting
 - **joblib** - Model serialization
+
+### **Database**
+- **MongoDB Atlas** - Cloud NoSQL database
+  - **Feature Store**: Stores processed AQI features (7,392+ records)
+  - **Model Registry**: Stores trained models with versioning
+  - **pymongo** - Python MongoDB driver
 
 ### **Web Framework**
 - **Streamlit** - Interactive dashboard
