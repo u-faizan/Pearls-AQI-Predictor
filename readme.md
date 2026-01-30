@@ -1,38 +1,39 @@
 # 🌍 Pearls AQI Predictor
 
-End-to-end ML pipeline for Air Quality Index (AQI) prediction with automated data collection, MongoDB storage, and real-time predictions.
+Air Quality Index (AQI) prediction system for Islamabad, Pakistan using machine learning.
 
-## 🎯 Overview
+## 🎯 Project Overview
 
-This project predicts AQI using real-time weather and pollutant data with machine learning models stored in MongoDB.
+This project aims to build an end-to-end ML pipeline for predicting Air Quality Index using real-time weather and air quality data.
 
-**Key Features:**
-- ✅ **23-feature XGBoost model** (MAE: 1.82, R²: 0.9226)
-- ✅ **MongoDB integration** for features and models
-- ✅ Automated data collection pipeline
-- ✅ Model registry with versioning
-- 🚧 CI/CD with GitHub Actions (in progress)
-- 🚧 Interactive web dashboard (planned)
+**Status:** 🚧 In Development (Phase 1: Data Collection & Exploration)
 
 ## 🛠️ Tech Stack
 
-- **ML/Data**: Python, Scikit-learn, XGBoost, LightGBM, Pandas
-- **Database**: MongoDB Atlas (Feature Store & Model Registry)
-- **APIs**: OpenMeteo (Weather & Air Quality)
-- **CI/CD**: GitHub Actions (planned)
-- **Web**: Streamlit/FastAPI (planned)
+- **Language**: Python 3.10+
+- **Data**: OpenMeteo API (Weather & Air Quality)
+- **ML**: Scikit-learn, XGBoost, LightGBM
+- **Database**: MongoDB Atlas
+- **Deployment**: Streamlit/FastAPI (planned)
 
-## 📊 Model Performance
+## 📁 Project Structure
 
-| Model | Test MAE | Test RMSE | Test R² |
-|-------|----------|-----------|---------|
-| Linear Regression | 10.93 | 38.31 | 0.4788 |
-| Ridge Regression | 10.93 | 38.31 | 0.4788 |
-| Random Forest | 3.38 | 21.93 | 0.8292 |
-| **XGBoost** ✅ | **1.82** | **14.76** | **0.9226** |
-| LightGBM | 3.67 | 19.55 | 0.8643 |
+```
+AQI_Predictor/
+├── src/
+│   ├── data/              # Data collection scripts
+│   ├── features/          # Feature engineering
+│   ├── models/            # Model training
+│   └── database/          # MongoDB integration
+├── data/
+│   ├── raw/              # Raw data from API
+│   └── processed/        # Processed features
+├── models/               # Trained models
+├── notebooks/            # Jupyter notebooks for analysis
+└── docs/                 # Documentation
+```
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
 - Python 3.10+
@@ -54,66 +55,49 @@ pip install -r requirements.txt
 
 # Set up environment variables
 cp .env.example .env
-# Add your MongoDB URI and API keys to .env
+# Add your API keys to .env
 ```
 
-### MongoDB Setup
+### Environment Variables
 
-1. Create free MongoDB Atlas cluster at [mongodb.com/cloud/atlas](https://mongodb.com/cloud/atlas)
-2. Get connection string
-3. Add to `.env`:
+Create a `.env` file with:
+
 ```env
+# OpenWeather API (optional - using OpenMeteo instead)
+OPENWEATHER_API_KEY=your_key_here
+
+# MongoDB (for feature store and model registry)
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
 MONGODB_DATABASE=aqi_predictor
+
+# City Configuration
+CITY_NAME=Islamabad
+CITY_LATITUDE=33.6996
+CITY_LONGITUDE=73.0362
 ```
 
-### Upload Data to MongoDB
+## 📊 Current Progress
 
-```bash
-# Upload features
-python scripts/upload_features_to_mongodb.py
+### Phase 1: Data Collection & Exploration ✅
+- [x] Set up project structure
+- [x] Configure OpenMeteo API
+- [x] Implement data collection pipeline
+- [ ] Exploratory Data Analysis
+- [ ] Feature engineering
+- [ ] Feature selection
 
-# Upload trained model
-python scripts/upload_model_to_mongodb.py
+### Phase 2: Model Development (Upcoming)
+- [ ] Train baseline models
+- [ ] Feature importance analysis
+- [ ] Model optimization
+- [ ] Model evaluation
 
-# Test connection
-python scripts/test_mongodb_connection.py
-```
-
-## 📁 Project Structure
-
-```
-AQI_Predictor/
-├── src/
-│   ├── data/              # Data collection scripts
-│   ├── features/          # Feature engineering
-│   ├── models/            # Model training
-│   └── database/          # MongoDB integration
-│       ├── mongodb_client.py
-│       ├── feature_store.py
-│       └── model_registry.py
-├── scripts/               # Utility scripts
-├── data/
-│   ├── raw/              # Raw data (gitignored)
-│   └── processed/        # Processed features (gitignored)
-├── models/               # Trained models (gitignored, stored in MongoDB)
-├── docs/                 # Documentation
-└── notebooks/            # Jupyter notebooks for EDA
-```
-
-## 📊 Project Status
-
-✅ **Phase 1: Model Development** (Completed)
-- Data collection
-- Feature engineering (23 features)
-- Model training (5 models)
-- Best model selection (XGBoost)
-
-🚧 **Phase 2: Production Deployment** (In Progress)
-- MongoDB integration ✅
-- Hourly data collection (planned)
-- Daily model retraining (planned)
-- CI/CD pipeline (planned)
+### Phase 3: Production Deployment (Planned)
+- [ ] MongoDB integration
+- [ ] Automated data collection
+- [ ] Model registry
+- [ ] CI/CD pipeline
+- [ ] Web dashboard
 
 ## 📝 Documentation
 
@@ -123,7 +107,7 @@ AQI_Predictor/
 
 ## 🤝 Contributing
 
-This is an internship project. Contributions and suggestions are welcome!
+This is an internship project. Suggestions and feedback are welcome!
 
 ## 📄 License
 
