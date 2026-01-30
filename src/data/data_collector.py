@@ -1,20 +1,24 @@
+"""
+Data Collection Script for AQI Predictor
+Fetches air quality and weather data from OpenMeteo API
+"""
+
 import os
-import time
 import pandas as pd
 import requests
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
-# ==================== CONFIG ====================
+# Config
 load_dotenv()
 
-LAT = float(os.getenv("LAT", "33.6844"))
-LON = float(os.getenv("LON", "73.0479"))
-CITY = os.getenv("CITY", "Islamabad")
+CITY = os.getenv("CITY_NAME", "Islamabad")
+LAT = float(os.getenv("CITY_LATITUDE", "33.6996"))
+LON = float(os.getenv("CITY_LONGITUDE", "73.0362"))
 
-START_DATE = "2025-01-01"
-END_DATE = "2025-11-06"
+START_DATE = "2024-12-24"
+END_DATE = "2025-12-24"
 
 OUTPUT_DIR = Path(__file__).resolve().parents[2] / "data" / "raw"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -23,9 +27,11 @@ AIR_URL = "https://air-quality-api.open-meteo.com/v1/air-quality"
 WEATHER_URL = "https://archive-api.open-meteo.com/v1/archive"
 
 AIR_PARAMS = ["pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide", "sulphur_dioxide", "ozone"]
-WEATHER_PARAMS = ["temperature_2m", "relative_humidity_2m", "surface_pressure", "wind_speed_10m", "wind_direction_10m", "precipitation"]
+WEATHER_PARAMS = ["temperature_2m", "relative_humidity_2m", "surface_pressure", "wind_speed_10m", 
+                  "wind_direction_10m", "precipitation", "cloud_cover"]
 
-# ==================== HELPERS ====================
+
+# Helpers
 def fetch_api(url, params):
     """Fetch API data and return DataFrame."""
     try:
@@ -41,7 +47,8 @@ def fetch_api(url, params):
     except Exception:
         return pd.DataFrame()
 
-# ==================== MAIN ====================
+
+# Main Function
 def main():
     print(f"Fetching AQI and weather data for {CITY} ({LAT}, {LON})")
     print(f"Date range: {START_DATE} to {END_DATE}")
@@ -53,7 +60,7 @@ def main():
         "start_date": START_DATE,
         "end_date": END_DATE,
         "hourly": ",".join(AIR_PARAMS),
-        "timezone": "UTC"
+        "timezone": "Asia/Karachi"
     })
 
     # Weather Data
@@ -63,7 +70,7 @@ def main():
         "start_date": START_DATE,
         "end_date": END_DATE,
         "hourly": ",".join(WEATHER_PARAMS),
-        "timezone": "UTC"
+        "timezone": "Asia/Karachi"
     })
 
     if air_df.empty or weather_df.empty:
@@ -81,13 +88,14 @@ def main():
     df.dropna(subset=["pm2_5", "pm10"], inplace=True)
 
     # Save data
-    filename = OUTPUT_DIR / f"openmeteo_combined_{CITY.lower()}_{START_DATE.replace('-', '')}-{END_DATE.replace('-', '')}.csv"
+    filename = OUTPUT_DIR / f"raw_data_{CITY.lower()}_{START_DATE.replace('-', '')}-{END_DATE.replace('-', '')}.csv"
     df.to_csv(filename, index=False)
 
-    print(f"Data saved to: {filename}")
+    print(f"\nData saved to: {filename}")
     print(f"Rows: {len(df)}, Columns: {len(df.columns)}")
     print(f"Date range: {df['timestamp'].min()} to {df['timestamp'].max()}")
-    print("Next step: run 'python src/features/compute_features.py'")
+    print(f"\nNext step: Explore data in Jupyter notebook")
+
 
 if __name__ == "__main__":
     main()

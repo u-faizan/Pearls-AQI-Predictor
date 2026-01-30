@@ -4,40 +4,74 @@ Air Quality Index (AQI) prediction system for Islamabad, Pakistan using machine 
 
 ## 🎯 Project Overview
 
-This project aims to build an end-to-end ML pipeline for predicting Air Quality Index using real-time weather and air quality data.
+| Property | Value |
+|----------|-------|
+| **Project Name** | AQI Predictor |
+| **Objective** | Predict Air Quality Index using Machine Learning |
+| **Location** | Islamabad, Pakistan (33.6996°N, 73.0362°E) |
+| **Timeline** | January 2026 - February 2026 |
+| **Status** | Phase 2 - Feature Engineering |
 
-**Status:** 🚧 In Development (Phase 1: Data Collection & Exploration)
+## 📊 Current Progress
+
+### Completed ✅
+- [x] Data collection from OpenMeteo API (1 year of hourly data)
+- [x] Exploratory Data Analysis (EDA)
+- [x] AQI calculation using EPA standards
+- [x] Data processing pipeline
+
+### In Progress 🔄
+- [ ] Feature engineering
+- [ ] Feature selection
+
+### Upcoming ⏳
+- [ ] Model training and evaluation
+- [ ] Model deployment
+
+## 📈 Data Summary
+
+- **Total Records**: 8,784 hourly observations
+- **Date Range**: Dec 24, 2024 - Dec 24, 2025
+- **Pollutants**: PM2.5, PM10, O₃, NO₂, SO₂, CO
+- **Weather Variables**: Temperature, Humidity, Pressure, Wind, Precipitation, Cloud Cover
+- **Mean AQI**: 180.9 (Unhealthy)
+- **Dominant Pollutants**: Ozone (50.9%), PM2.5 (46.8%)
 
 ## 🛠️ Tech Stack
 
 - **Language**: Python 3.10+
 - **Data**: OpenMeteo API (Weather & Air Quality)
-- **ML**: Scikit-learn, XGBoost, LightGBM
-- **Database**: MongoDB Atlas
-- **Deployment**: Streamlit/FastAPI (planned)
+- **Analysis**: pandas, numpy, matplotlib, seaborn
+- **ML**: scikit-learn, XGBoost, LightGBM (planned)
 
 ## 📁 Project Structure
 
 ```
 AQI_Predictor/
 ├── src/
-│   ├── data/              # Data collection scripts
-│   ├── features/          # Feature engineering
-│   ├── models/            # Model training
-│   └── database/          # MongoDB integration
+│   ├── data/
+│   │   └── data_collector.py      # Data collection from API
+│   └── features/
+│       └── calculate_aqi.py       # AQI calculation
 ├── data/
-│   ├── raw/              # Raw data from API
-│   └── processed/        # Processed features
-├── models/               # Trained models
-├── notebooks/            # Jupyter notebooks for analysis
-└── docs/                 # Documentation
+│   ├── raw/                       # Raw data from API
+│   │   └── raw_data_islamabad_*.csv
+│   └── processed/                 # Processed data with AQI
+│       └── aqi_data.csv
+├── notebooks/
+│   └── eda/                       # Exploratory Data Analysis
+│       ├── 01_data_exploration.ipynb
+│       └── 02_aqi_calculation.ipynb
+├── docs/
+│   └── DOCUMENTATION.md           # Project documentation
+└── readme.md                      # This file
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Python 3.10+
-- MongoDB Atlas account (free tier)
+- Internet connection (for API access)
 
 ### Installation
 
@@ -48,62 +82,40 @@ cd Pearls-AQI-Predictor
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+venv\Scripts\activate  # On Windows
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Set up environment variables
-cp .env.example .env
-# Add your API keys to .env
 ```
 
-### Environment Variables
+### Environment Setup
 
-Create a `.env` file with:
+Create a `.env` file:
 
 ```env
-# OpenWeather API (optional - using OpenMeteo instead)
-OPENWEATHER_API_KEY=your_key_here
-
-# MongoDB (for feature store and model registry)
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-MONGODB_DATABASE=aqi_predictor
-
 # City Configuration
 CITY_NAME=Islamabad
 CITY_LATITUDE=33.6996
 CITY_LONGITUDE=73.0362
 ```
 
-## 📊 Current Progress
+### Usage
 
-### Phase 1: Data Collection & Exploration ✅
-- [x] Set up project structure
-- [x] Configure OpenMeteo API
-- [x] Implement data collection pipeline
-- [ ] Exploratory Data Analysis
-- [ ] Feature engineering
-- [ ] Feature selection
+```bash
+# 1. Collect data from API
+python src/data/data_collector.py
 
-### Phase 2: Model Development (Upcoming)
-- [ ] Train baseline models
-- [ ] Feature importance analysis
-- [ ] Model optimization
-- [ ] Model evaluation
+# 2. Calculate AQI
+python src/features/calculate_aqi.py
 
-### Phase 3: Production Deployment (Planned)
-- [ ] MongoDB integration
-- [ ] Automated data collection
-- [ ] Model registry
-- [ ] CI/CD pipeline
-- [ ] Web dashboard
+# 3. Explore data in notebooks
+jupyter notebook notebooks/eda/
+```
 
 ## 📝 Documentation
 
-- [Project Documentation](docs/PROJECT_DOCUMENTATION.md)
-- [Feature Engineering](docs/FEATURE_ENGINEERING.md)
-- [Implementation Plan](implementation_plan.md)
+- [Full Documentation](docs/DOCUMENTATION.md) - Complete project documentation
+- [EDA Notebooks](notebooks/eda/) - Data exploration and analysis
 
 ## 🤝 Contributing
 
