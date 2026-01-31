@@ -141,6 +141,7 @@ AQI_Predictor/
 │   └── eda/                       # Exploratory Data Analysis
 │       ├── 01_data_exploration.ipynb
 │       └── 02_aqi_calculation.ipynb
+│   └── 03_feature_selection.ipynb # Feature Selection & Analysis
 ├── docs/
 │   └── DOCUMENTATION.md           # This file
 ├── .env                           # Environment variables
@@ -184,7 +185,7 @@ AQI_Predictor/
 - [x] Calculate AQI from pollutant concentrations
 - [ ] Create time-based features
 - [ ] Engineer weather interaction features
-- [ ] Feature selection and importance analysis
+- [x] Feature selection and importance analysis
 - [ ] Document feature engineering decisions
 
 ### 🔄 Phase 3: Model Development (Upcoming)

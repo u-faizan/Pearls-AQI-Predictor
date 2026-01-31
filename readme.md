@@ -62,6 +62,7 @@ AQI_Predictor/
 │   └── eda/                       # Exploratory Data Analysis
 │       ├── 01_data_exploration.ipynb
 │       └── 02_aqi_calculation.ipynb
+│   └── 03_feature_selection.ipynb # Feature Selection & Analysis
 ├── docs/
 │   └── DOCUMENTATION.md           # Project documentation
 └── readme.md                      # This file
