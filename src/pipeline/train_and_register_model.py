@@ -33,8 +33,16 @@ def load_features_from_mongodb():
     
     mongo.close()
     
+    if not data:
+        print("ERROR: No data found in MongoDB!")
+        print("Please run upload_historical_data.py first.")
+        sys.exit(1)
+    
     df = pd.DataFrame(data)
-    df = df.drop('_id', axis=1)  # Remove MongoDB ID
+    
+    # Remove MongoDB ID if it exists
+    if '_id' in df.columns:
+        df = df.drop('_id', axis=1)
     
     print(f"Loaded {len(df)} rows\n")
     return df
