@@ -29,7 +29,6 @@ build/
 Thumbs.db
 
 # Project specific
-models/*.pkl
 data/raw/*.csv
 data/processed/*.csv
 
