@@ -1,29 +1,21 @@
 # Python
-venv/
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+venv/
+env/
+ENV/
 *.egg-info/
-.installed.cfg
-*.egg
+dist/
+build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Environment variables
 .env
-.env.local
 
 # IDE
 .vscode/
@@ -32,34 +24,18 @@ wheels/
 *.swo
 *~
 
-# Jupyter Notebook
-# .ipynb_checkpoints
-# *.ipynb
-
-# Data
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-
-# Models
-models/*.pkl
-models/*.h5
-models/*.joblib
-
-# Logs
-*.log
-logs/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# Project specific
+models/*.pkl
+data/raw/*.csv
+data/processed/*.csv
 
-# API Keys
-*_api_key.txt
-*.key
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak

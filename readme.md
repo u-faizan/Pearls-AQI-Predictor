@@ -10,7 +10,7 @@ Air Quality Index (AQI) prediction system for Islamabad, Pakistan using machine 
 | **Objective** | Predict Air Quality Index using Machine Learning |
 | **Location** | Islamabad, Pakistan (33.6996°N, 73.0362°E) |
 | **Timeline** | January 2026 - February 2026 |
-| **Status** | Phase 2 - Feature Engineering |
+| **Status** | Phase 3 - Model Development |
 
 ## 📊 Current Progress
 
@@ -18,14 +18,14 @@ Air Quality Index (AQI) prediction system for Islamabad, Pakistan using machine 
 - [x] Data collection from OpenMeteo API (1 year of hourly data)
 - [x] Exploratory Data Analysis (EDA)
 - [x] AQI calculation using EPA standards
+- [x] Feature selection and importance analysis
+- [x] Feature engineering (19 features created)
 - [x] Data processing pipeline
 
 ### In Progress 🔄
-- [ ] Feature engineering
-- [ ] Feature selection
+- [ ] Model training and evaluation
 
 ### Upcoming ⏳
-- [ ] Model training and evaluation
 - [ ] Model deployment
 
 ## 📈 Data Summary
@@ -52,12 +52,14 @@ AQI_Predictor/
 │   ├── data/
 │   │   └── data_collector.py      # Data collection from API
 │   └── features/
-│       └── calculate_aqi.py       # AQI calculation
+│       ├── calculate_aqi.py       # AQI calculation
+│       └── feature_engineering.py # Feature engineering
 ├── data/
 │   ├── raw/                       # Raw data from API
 │   │   └── raw_data_islamabad_*.csv
 │   └── processed/                 # Processed data with AQI
-│       └── aqi_data.csv
+│       ├── aqi_data.csv           # Data with AQI calculated
+│       └── processed_aqi.csv      # Final data with all features
 ├── notebooks/
 │   └── eda/                       # Exploratory Data Analysis
 │       ├── 01_data_exploration.ipynb
@@ -109,8 +111,11 @@ python src/data/data_collector.py
 # 2. Calculate AQI
 python src/features/calculate_aqi.py
 
-# 3. Explore data in notebooks
-jupyter notebook notebooks/eda/
+# 3. Engineer features
+python src/features/feature_engineering.py
+
+# 4. Explore data in notebooks
+jupyter notebook notebooks/
 ```
 
 ## 📝 Documentation

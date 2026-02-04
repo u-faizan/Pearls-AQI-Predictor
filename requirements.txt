@@ -1,0 +1,21 @@
+# Core dependencies
+pandas
+numpy
+python-dotenv
+
+# Machine Learning
+scikit-learn
+xgboost
+lightgbm
+joblib
+
+# Database
+pymongo
+certifi
+
+# API
+requests
+
+# Dashboard
+streamlit
+plotly
