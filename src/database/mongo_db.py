@@ -22,11 +22,13 @@ class MongoDB:
     def connect(self):
         """Connect to MongoDB."""
         try:
-            # Use certifi for SSL certificates (fixes Windows SSL error)
+            # Use certifi for SSL certificates and allow invalid certs for GitHub Actions
             self.client = MongoClient(
                 self.uri,
+                tls=True,
                 tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=5000
+                tlsAllowInvalidCertificates=True,
+                serverSelectionTimeoutMS=10000
             )
             self.db = self.client[self.db_name]
             # Test connection
