@@ -33,30 +33,24 @@ def fetch_latest_weather_data():
     start_date = start_time.strftime("%Y-%m-%d")
     end_date = end_time.strftime("%Y-%m-%d")
     
-    # OpenMeteo API URL
-    url = "https://air-quality.open-meteo.com/v1/air-quality"
+    # OpenMeteo API URLs - FIXED to use working endpoints
+    # Using the same endpoints that work for historical data collection
+    air_url = "https://air-quality-api.open-meteo.com/v1/air-quality"
+    weather_url = "https://archive-api.open-meteo.com/v1/archive"
     
-    params = {
+    air_params = {
         "latitude": latitude,
         "longitude": longitude,
-        "hourly": [
-            "pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide",
-            "sulphur_dioxide", "ozone", "dust"
-        ],
+        "hourly": "pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone",
         "start_date": start_date,
         "end_date": end_date,
         "timezone": "Asia/Karachi"
     }
     
-    # Add weather parameters
-    weather_url = "https://api.open-meteo.com/v1/forecast"
     weather_params = {
         "latitude": latitude,
         "longitude": longitude,
-        "hourly": [
-            "temperature_2m", "relative_humidity_2m", "precipitation",
-            "cloud_cover", "wind_speed_10m", "wind_direction_10m"
-        ],
+        "hourly": "temperature_2m,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_direction_10m",
         "start_date": start_date,
         "end_date": end_date,
         "timezone": "Asia/Karachi"
@@ -64,12 +58,14 @@ def fetch_latest_weather_data():
     
     try:
         # Fetch air quality data
-        response_aq = requests.get(url, params=params, timeout=30)
+        print(f"Fetching from: {air_url}")
+        response_aq = requests.get(air_url, params=air_params, timeout=120)
         response_aq.raise_for_status()
         data_aq = response_aq.json()
         
         # Fetch weather data
-        response_weather = requests.get(weather_url, params=weather_params, timeout=30)
+        print(f"Fetching from: {weather_url}")
+        response_weather = requests.get(weather_url, params=weather_params, timeout=120)
         response_weather.raise_for_status()
         data_weather = response_weather.json()
         
