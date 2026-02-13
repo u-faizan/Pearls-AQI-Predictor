@@ -168,7 +168,7 @@ def save_predictions_to_mongodb(forecast_df, model_name):
     
     # Prepare prediction documents
     predictions = []
-    prediction_date = datetime.now().isoformat()
+    prediction_date = datetime.utcnow().isoformat()
     
     for _, row in forecast_df.iterrows():
         predictions.append({

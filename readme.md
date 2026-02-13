@@ -41,11 +41,13 @@ A complete end-to-end machine learning pipeline that:
 - Manual prediction refresh option
 
 ### Model Performance
-- **R² Score**: 0.8229 (82.3% variance explained)
-- **RMSE**: 34.86
-- **MAE**: 14.68
-- **Training Data**: 8,760 hours (1 year)
+- **Current Model**: LightGBM (R² = 0.7573)
+- **Baseline Model**: LightGBM (R² = 0.82) - Preserved for comparison
+- **RMSE**: 26.3
+- **MAE**: 20.5
+- **Training Data**: 8,761 hours (1 year + daily updates)
 - **Features**: 19 engineered features
+- **Model Registry**: Keeps baseline + last 5 daily training runs
 
 ---
 
@@ -63,6 +65,8 @@ A complete end-to-end machine learning pipeline that:
 - **Air Quality**: OpenMeteo Air Quality API (PM2.5, PM10, O₃, NO₂, SO₂, CO)
 - **Weather**: OpenMeteo Weather API (Temperature, Humidity, Wind, Precipitation)
 - **Storage**: MongoDB Atlas (Cloud database)
+
+**Note:** OpenMeteo API data typically has a 1-2 hour delay. The dashboard displays model predictions as "Current AQI" for better accuracy and real-time estimates.
 
 ---
 
@@ -203,9 +207,11 @@ All workflows are in `.github/workflows/` and run automatically.
 ## Dashboard Features
 
 ### Current AQI Display
-- Latest actual AQI value
+- **Current AQI (Estimated)**: Shows the first prediction value for most accurate real-time estimate
+- **Fallback**: Uses latest measured data if predictions unavailable
 - Health category (Good/Moderate/Unhealthy/etc.)
 - Location and model information
+- *Note: Predictions used due to 1-2 hour API data delay*
 
 ### 3-Day Forecast
 - Interactive line chart with 72 hourly predictions

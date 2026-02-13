@@ -63,6 +63,28 @@ def refresh_predictions():
         st.error(f"❌ Error: {str(e)}")
 
 
+def collect_fresh_data():
+    """Run data collection pipeline to fetch latest AQI data."""
+    try:
+        with st.spinner("Collecting fresh AQI data from API... This may take a moment."):
+            result = subprocess.run(
+                ["python", "src/pipeline/collect_and_store_features.py"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
+            if result.returncode == 0:
+                st.success("✅ Fresh data collected successfully!")
+                st.rerun()
+            else:
+                st.error(f"❌ Error: {result.stderr}")
+    except subprocess.TimeoutExpired:
+        st.error("❌ Data collection timed out. Please try again.")
+    except Exception as e:
+        st.error(f"❌ Error: {str(e)}")
+
+
+
 def load_model_registry():
     """Load model comparison from MongoDB."""
     mongo = MongoDB()
@@ -125,13 +147,31 @@ st.sidebar.info(
     """
 )
 
+st.sidebar.markdown("### 🤖 Automation")
+st.sidebar.caption(
+    """
+    - **Data Collection**: Every hour
+    - **Model Training**: Daily at 2 AM UTC
+    - **Predictions**: Daily at 3 AM UTC
+    
+    *Note: OpenMeteo API data has 1-2 hour delay.  
+    Current AQI shows model prediction for accuracy.*
+    """
+)
+
 # Refresh predictions button
 st.sidebar.markdown("---")
 st.sidebar.header("Actions")
-if st.sidebar.button("🔄 Refresh Predictions", use_container_width=True):
-    refresh_predictions()
 
-st.sidebar.caption("Click to generate fresh 3-day forecast")
+if st.sidebar.button("📡 Collect Fresh Data", use_container_width=True):
+    collect_fresh_data()
+st.sidebar.caption("Fetch latest AQI data (runs locally)")
+
+st.sidebar.markdown("")  # Spacing
+
+if st.sidebar.button("🔄 Regenerate Predictions", use_container_width=True):
+    refresh_predictions()
+st.sidebar.caption("Regenerate 72-hour forecast (runs locally)")
 
 # Load data
 registry = load_model_registry()
@@ -143,16 +183,55 @@ st.header("📊 Current AQI")
 
 col1, col2, col3 = st.columns(3)
 
-if latest_data:
-    current_aqi = int(latest_data['aqi'])
+# Use first prediction as "current" AQI since it's more up-to-date
+if not predictions_df.empty:
+    # Get the first (earliest) prediction - this is the most current estimate
+    first_prediction = predictions_df.iloc[0]
+    current_aqi = int(first_prediction['predicted_aqi'])
+    current_timestamp = first_prediction['timestamp']
     category, color = get_aqi_category(current_aqi)
     
     with col1:
         st.metric(
-            label="Current AQI",
+            label="Current AQI (Estimated)",
             value=current_aqi,
             delta=category
         )
+        # Show when predictions were generated
+        if 'prediction_date' in first_prediction:
+            pred_date = pd.to_datetime(first_prediction['prediction_date'])
+            # Convert to Pakistan time (UTC+5)
+            from datetime import timedelta
+            pred_date_pk = pred_date + timedelta(hours=5)
+            st.caption(f"📊 Predictions generated: {pred_date_pk.strftime('%b %d, %H:%M')} PKT")
+        else:
+            st.caption("📊 Based on latest model prediction")
+    
+    with col2:
+        st.metric(
+            label="Location",
+            value="Islamabad, Pakistan"
+        )
+    
+    with col3:
+        if registry:
+            st.metric(
+                label="Model Used",
+                value=registry['best_model'].upper()
+            )
+elif latest_data:
+    # Fallback to actual data if no predictions available
+    current_aqi = int(latest_data['aqi'])
+    category, color = get_aqi_category(current_aqi)
+    latest_timestamp = pd.to_datetime(latest_data['timestamp'])
+    
+    with col1:
+        st.metric(
+            label="Current AQI (Measured)",
+            value=current_aqi,
+            delta=category
+        )
+        st.caption(f"Measured: {latest_timestamp.strftime('%Y-%m-%d %H:%M')}")
     
     with col2:
         st.metric(
@@ -200,6 +279,11 @@ if not predictions_df.empty:
     daily_summary['Max AQI'] = daily_summary['Max AQI'].round(0).astype(int)
     
     st.dataframe(daily_summary, use_container_width=True, hide_index=True)
+    
+    # Show overall AQI range
+    overall_min = predictions_df['predicted_aqi'].min()
+    overall_max = predictions_df['predicted_aqi'].max()
+    st.caption(f"📊 Overall AQI Range: {int(overall_min)}-{int(overall_max)}")
 
 else:
     st.warning("No predictions available. Run prediction pipeline first.")
