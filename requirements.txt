@@ -1,6 +1,6 @@
 # Core dependencies
-pandas
-numpy
+pandas<3.0.0
+numpy<2.0.0
 python-dotenv
 
 # Machine Learning
@@ -17,6 +17,7 @@ certifi
 requests
 
 # Dashboard
-streamlit
+streamlit==1.38.0
+pillow
 plotly
 altair<5
