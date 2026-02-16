@@ -19,3 +19,4 @@ requests
 # Dashboard
 streamlit
 plotly
+altair<5
