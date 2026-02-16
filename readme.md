@@ -7,6 +7,8 @@
 [![MongoDB](https://img.shields.io/badge/Database-MongoDB-green.svg)](https://www.mongodb.com/)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-red.svg)](https://streamlit.io/)
 
+🌐 **[Live Dashboard](https://pearl-aqi-predictor.streamlit.app/)** - View real-time AQI predictions
+
 ## Project Overview
 
 A complete end-to-end machine learning pipeline that:
