@@ -152,7 +152,7 @@ def save_best_model(models, best_model_name):
 
 
 def register_model_to_mongodb(results, best_model_name):
-    """Save model metadata to MongoDB."""
+    """Save model metadata to MongoDB and maintain training history."""
     
     print("Registering model to MongoDB...")
     
@@ -164,17 +164,32 @@ def register_model_to_mongodb(results, best_model_name):
     # Create model registry document
     registry = {
         "version": "v1.0",
-        "timestamp": datetime.now().isoformat(),
+        "trained_date": datetime.now().isoformat(),
         "models": results,
         "best_model": best_model_name,
-        "best_model_path": f"models/best_model_{best_model_name}.pkl"
+        "best_model_path": f"models/best_model_{best_model_name}.pkl",
+        "is_latest": True,
+        "is_baseline": False
     }
     
-    # Replace existing registry (only keep latest)
-    collection.delete_many({})
+    # Mark all existing records as not latest
+    collection.update_many({}, {"$set": {"is_latest": False}})
+    
+    # Insert new registry
     collection.insert_one(registry)
     
-    print(f"Registered: {best_model_name} (R² = {results[best_model_name]['r2']})\n")
+    # Keep baseline + last 5 daily runs (delete older daily runs only)
+    all_records = list(collection.find().sort("trained_date", -1))
+    baseline_models = [r for r in all_records if r.get('is_baseline', False)]
+    daily_models = [r for r in all_records if not r.get('is_baseline', False)]
+    
+    if len(daily_models) > 5:
+        ids_to_delete = [rec['_id'] for rec in daily_models[5:]]
+        collection.delete_many({"_id": {"$in": ids_to_delete}})
+        print(f"Kept last 5 daily runs, deleted {len(ids_to_delete)} older records")
+    
+    print(f"Registered: {best_model_name} (R² = {results[best_model_name]['r2']})")
+    print(f"Total models: {len(baseline_models)} baseline + {min(len(daily_models), 5)} daily\n")
     
     mongo.close()
 
